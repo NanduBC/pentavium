@@ -1,5 +1,50 @@
 import time
 
+# Rules:
+# 1 --> 1721342310
+# 2 --> 2523490710
+# 3 --> 1452976485
+# 4 --> 1520018790
+ca_rule_order = [3, 1, 2, 4, 1, 3, 4, 2]
+
+
+def five_neighborhood_cellular_automata(
+        s_minus_two,
+        s_minus_one,
+        s,
+        s_plus_one,
+        s_plus_two,
+        rule_index):
+    '''
+    Find the next state of cell s based on the values of s_minus_two,
+    s_minus_one, s, s_plus_one and s_plus_two and the rule.
+
+    Parameters:
+    ----------
+    s_minus_two:
+    s_minus_one:
+    s:
+    s_plus_one:
+    s_plus_two:
+
+    Returns:
+    -------
+    State of s in the next clock cycle
+    '''
+    pass
+
+
+def apply_CA_to_blocks(reg_X):
+    '''
+    Apply approapriate CA rule to each cell of the block registers
+
+    Parameters:
+    ----------
+    reg_X: reg_A, reg_B, reg_C
+    '''
+    pass
+
+
 reg_A = [0] * 93
 reg_B = [0] * 84
 reg_C = [0] * 111
