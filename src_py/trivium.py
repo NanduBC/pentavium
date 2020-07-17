@@ -32,6 +32,7 @@ for i in range(1, 100001):
     for x in range(110, 0, -1):
         reg_C[x] = reg_C[x-1]
     reg_C[0] = T3
+    output_bit = t1 ^ t2 ^ t3
     if i in [32, 144, 1152, 100000]:
         time_taken = (time.time_ns() - start_time)/10**9
         print('Time taken {} for iteration {}'.format(
