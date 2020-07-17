@@ -23,15 +23,14 @@ for i in range(1, 100001):
     T1 = t1 ^ (reg_A[90] & reg_A[91]) ^ reg_B[76]
     T2 = t2 ^ (reg_B[81] & reg_B[82]) ^ reg_C[87]
     T3 = t3 ^ (reg_C[109] & reg_C[110]) ^ reg_A[68]
-    for x in range(92, 0, -1):
-        reg_A[x] = reg_A[x-1]
-    reg_A[0] = T1
-    for x in range(83, 0, -1):
-        reg_B[x] = reg_B[x-1]
-    reg_B[0] = T2
-    for x in range(110, 0, -1):
-        reg_C[x] = reg_C[x-1]
-    reg_C[0] = T3
+
+    reg_A.pop()
+    reg_A.insert(0, T1)
+    reg_B.pop()
+    reg_B.insert(0, T2)
+    reg_C.pop()
+    reg_C.index(0, T3)
+
     output_bit = t1 ^ t2 ^ t3
     if i in [32, 144, 1152, 100000]:
         time_taken = (time.time_ns() - start_time)/10**9
