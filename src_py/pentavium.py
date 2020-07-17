@@ -31,7 +31,14 @@ def five_neighborhood_cellular_automata(
     -------
     State of s in the next clock cycle
     '''
-    pass
+    if rule_index == 1:
+        return s_minus_two ^ s_minus_one ^ s ^ s_plus_one ^ s_plus_two
+    elif rule_index == 2:
+        return s_minus_two ^ s_minus_two ^ s_plus_one ^ s_plus_two
+    elif rule_index == 3:
+        return s_plus_one & (1 ^ s_plus_two ^ s_minus_two ^ s_minus_one) | (1 ^ s_plus_one) & (1 ^ s_plus_two ^ s_minus_two ^ s)
+    elif rule_index == 4:
+        return (1 ^ s_minus_one) & (s_minus_two ^ s_plus_one ^ s_plus_two) | s_minus_one & (1 ^ s_minus_two ^ s ^ s_plus_two)
 
 
 def apply_CA_to_blocks(reg_X):
