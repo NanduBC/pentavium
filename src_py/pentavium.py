@@ -57,6 +57,10 @@ def apply_CA_to_blocks(reg_X):
     ----------
     reg_X: reg_A, reg_B, reg_C
 
+    Returns:
+    -------
+    A temporary register with CA values of each cell calculated
+
     Notes:
     -----
     Since CA is null boundary first, second, second last and
