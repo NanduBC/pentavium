@@ -1,3 +1,6 @@
+'''
+This is a naive Python implementation of CAvium
+'''
 import time
 
 # Rules:
@@ -10,97 +13,69 @@ import time
 # 7 --> 210
 # 8 --> 240
 ca_rule_order = [1, 2, 3, 4, 5, 6, 7, 8]
+treg_X = [0] * 110
+
+
+def three_neighborhood_cellular_automata(
+        s_minus_one,
+        s,
+        s_plus_one,
+        rule_mappings):
+    '''
+    Find the next state of cell s based on the values of s_minus_one,
+    s, s_plus_one and the rule_mappings which provides the rule to apply.
+    Parameters:
+    ----------
+    s_minus_one: State of left cell at i th clock cycle
+    s: State of the cell at i th clock cycle
+    s_plus_one: State of right cell at i th clock cycle
+    rule_mappings: Shorthand for rule numbers that would be used to
+        determine the rule to be used at each cell
+    
+    Returns: 
+    -------
+    State of s in the next clock cycle
+    '''
+    if rule_mappings == 1:
+        return (1 ^ s_minus_one) & s_plus_one | (1 ^ s_plus_one) & (s_minus_one ^ s)
+    elif rule_mappings == 2:
+        return s_minus_one ^ s
+    elif rule_mappings == 3:
+        return s_minus_one ^ s_plus_one
+    elif rule_mappings == 4:
+        return s_plus_one & (s_minus_one ^ s) | s_minus_one & (1 ^ s_plus_one)
+    elif rule_mappings == 5:
+        return s_minus_one ^ s ^ s_plus_one
+    elif rule_mappings == 6:
+        return s_minus_one & s_plus_one | (1 ^ s_plus_one) & (s_minus_one ^ s)
+    elif rule_mappings == 7:
+        return (1 ^ s) & (s_minus_one ^ s_plus_one) | s_minus_one & s
+    elif rule_mappings == 8:
+        return s_minus_one
+
+def apply_CA_to_blocks(reg_X):
+    '''
+    Apply approapriate CA rule to each cell of the block registers
+    except the last register
+    Parameters:
+    ----------
+    Since CA is null boundary first elements have one neighbor as 0
+    '''
+    for i in range(len(reg_X)-1):
+        rule_mappings = ca_rule_order[i % 8]
+        if i == 0:
+            treg_X[i] = three_neighborhood_cellular_automata(0, reg_X[i], reg_X[i+1], rule_mappings)
+        else:
+            treg_X[i] = three_neighborhood_cellular_automata(reg_X[i-1], reg_X[i], reg_X[i+1], rule_mappings)
+    return treg_X[:len(reg_X)-1]
+
+
 
 reg_A = [0] * 93
 reg_B = [0] * 84
 reg_C = [0] * 111
 
 reg_C[108] = reg_C[109] = reg_C[110] = 1
-    
-t_reg_A = [0] * 93
-t_reg_B = [0] * 84
-t_reg_C = [0] * 111
-
-def three_neighborhood_cellular_automata(
-        s_minus_one,
-        s,
-        s_plus_one,
-        rule_index):
-    '''
-    Find the next state of cell s based on the values of s_minus_one,
-    s, s_plus_one and the rule_index which provides the rule to apply.
-    Parameters:
-    ----------
-    s_minus_one:
-    s:
-    s_plus_one:
-    rule_index
-    Returns:
-    -------
-    State of s in the next clock cycle
-    '''
-    if rule_index == 1:
-        return (1 ^ s_minus_one) & s_plus_one | (1 ^ s_plus_one) & (s_minus_one ^ s)
-    elif rule_index == 2:
-        return s_minus_one ^ s
-    elif rule_index == 3:
-        return s_minus_one ^ s_plus_one
-    elif rule_index == 4:
-        return s_plus_one & (s_minus_one ^ s) | s_minus_one & (1 ^ s_plus_one)
-    elif rule_index == 5:
-        return s_minus_one ^ s ^ s_plus_one
-    elif rule_index == 6:
-        return s_minus_one & s_plus_one | (1 ^ s_plus_one) & (s_minus_one ^ s)
-    elif rule_index == 7:
-        return (1 ^ s) & (s_minus_one ^ s_plus_one) | s_minus_one & s
-    elif rule_index == 8:
-        return s_minus_one
-
-def parse_register(
-    index,
-    register_block):
-    '''
-    Parse register values to satisfy null boundary CA
-    Parameters:
-    ----------
-    index:
-    register_block:
-    '''
-    if register_block == 93:
-        if index == 0:
-            return [0, reg_A[index], reg_A[index+1]]
-        else:
-            return [reg_A[index-1], reg_A[index], reg_A[index+1]]
-    if register_block == 84:
-        if index==0:
-            return [0, reg_B[index], reg_B[index+1]]
-        else:
-            return [reg_B[index-1], reg_B[index], reg_B[index+1]]
-    if register_block == 111:
-        if index == 0:
-            return [0, reg_C[index], reg_C[index+1]]
-        else:
-            return [reg_C[index-1], reg_C[index], reg_C[index+1]]
-
-def apply_CA_to_blocks():
-    '''
-    Apply approapriate CA rule to each cell of the block registers
-    Parameters:
-    ----------
-    '''
-    for x in range(0,92):
-        s_minus_one, s, s_plus_one = parse_register(x,93)
-        t_reg_A[x+1] = three_neighborhood_cellular_automata(s_minus_one, s, s_plus_one, ca_rule_order[(x%8)-1])
-    for x in range(0,83):
-        s_minus_one, s, s_plus_one = parse_register(x,84)
-        t_reg_B[x+1] = three_neighborhood_cellular_automata(s_minus_one, s, s_plus_one, ca_rule_order[(x%8)-1])
-    for x in range(0,110):
-        s_minus_one, s, s_plus_one = parse_register(x,111)
-        t_reg_C[x+1] = three_neighborhood_cellular_automata(s_minus_one, s, s_plus_one, ca_rule_order[(x%8)-1])
-
-    return [t_reg_A, t_reg_B, t_reg_C]
-
-
 
 key = '00101110110000000110010101111101000011011100110100101111011001010101110010011001'
 init_vector = '01001111010101010111110111010110101011110010110100001100010000010111101100100000'
@@ -117,17 +92,19 @@ for i in range(1, 100001):
     t2 = reg_B[68] ^ reg_B[83]
     t3 = reg_C[65] ^ reg_C[110]
 
-    T1 = t1 ^ (reg_A[90] & reg_A[91]) ^ reg_B[76]
-    T2 = t2 ^ (reg_B[81] & reg_B[82]) ^ reg_C[87]
-    T3 = t3 ^ (reg_C[109] & reg_C[110]) ^ reg_A[68]
-
-    [reg_A, reg_B, reg_C] = apply_CA_to_blocks()
-
-    reg_A[0] = T3
-    reg_B[0] = T1
-    reg_C[0] = T2
-
     output_bit = t1 ^ t2 ^ t3
+    
+    t1 = t1 ^ (reg_A[90] & reg_A[91]) ^ reg_B[76]
+    t2 = t2 ^ (reg_B[81] & reg_B[82]) ^ reg_C[87]
+    t3 = t3 ^ (reg_C[109] & reg_C[110]) ^ reg_A[68]
+
+    reg_A[1:] = apply_CA_to_blocks(reg_A)
+    reg_A[0] = t3
+    reg_B[1:] = apply_CA_to_blocks(reg_B)
+    reg_B[0] = t1
+    reg_C[1:] = apply_CA_to_blocks(reg_C)
+    reg_C[0] = t2
+
     if i in [32, 144, 1152, 100000]:
         time_taken = (time.time_ns() - start_time)/10**9
         print('Time taken {} for iteration {}'.format(
