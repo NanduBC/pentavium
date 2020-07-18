@@ -1,5 +1,5 @@
 '''
-This is a Python implementation of Trivium
+This is a naive Python implementation of Trivium
 '''
 import time
 
@@ -24,18 +24,19 @@ for i in range(1, 100001):
     t2 = reg_B[68] ^ reg_B[83]
     t3 = reg_C[65] ^ reg_C[110]
 
-    T1 = t1 ^ (reg_A[90] & reg_A[91]) ^ reg_B[76]
-    T2 = t2 ^ (reg_B[81] & reg_B[82]) ^ reg_C[87]
-    T3 = t3 ^ (reg_C[109] & reg_C[110]) ^ reg_A[68]
-
-    reg_A.pop()
-    reg_A.insert(0, T1)
-    reg_B.pop()
-    reg_B.insert(0, T2)
-    reg_C.pop()
-    reg_C.insert(0, T3)
-
     output_bit = t1 ^ t2 ^ t3
+
+    t1 = t1 ^ (reg_A[90] & reg_A[91]) ^ reg_B[76]
+    t2 = t2 ^ (reg_B[81] & reg_B[82]) ^ reg_C[87]
+    t3 = t3 ^ (reg_C[109] & reg_C[110]) ^ reg_A[68]
+
+    reg_A[1:] = reg_A[:-1]
+    reg_A[0] = t3
+    reg_B[1:] = reg_B[:-1]
+    reg_B[0] = t1
+    reg_C[1:] = reg_C[:-1]
+    reg_C[0] = t2
+
     if i in [32, 144, 1152, 100000]:
         time_taken = (time.time_ns() - start_time)/10**9
         print('Time taken {} for iteration {}'.format(
