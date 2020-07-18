@@ -1,5 +1,9 @@
+'''
+This is a Python implementation of Pentavium
+'''
 import time
 
+print('PENTAVIUM')
 # Rules:
 # 1 --> 1721342310
 # 2 --> 2523490710
@@ -101,7 +105,7 @@ for i in range(1, 100001):
     reg_B.insert(0, T2)
     reg_C.pop()
     apply_CA_to_blocks(reg_C)
-    reg_C.index(0, T3)
+    reg_C.insert(0, T3)
 
     output_bit = t1 ^ t2 ^ t3
     if i in [32, 144, 1152, 100000]:
