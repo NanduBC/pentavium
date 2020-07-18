@@ -34,7 +34,7 @@ def three_neighborhood_cellular_automata(
     
     Returns: 
     -------
-    State of s in the next clock cycle
+    State of s in the i+1 th clock cycle
     '''
     if rule_mappings == 1:
         return (1 ^ s_minus_one) & s_plus_one | (1 ^ s_plus_one) & (s_minus_one ^ s)
