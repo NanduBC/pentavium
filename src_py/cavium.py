@@ -23,7 +23,7 @@ def three_neighborhood_cellular_automata(
         rule_mappings):
     '''
     Find the next state of cell s based on the values of s_minus_one,
-    s, s_plus_one and the rule_mappings which provides the rule to apply.
+    s, s_plus_one and the rule.
     Parameters:
     ----------
     s_minus_one: State of left cell at i th clock cycle
