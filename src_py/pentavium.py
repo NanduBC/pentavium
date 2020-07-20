@@ -3,7 +3,6 @@ This is a naive Python implementation of Pentavium
 '''
 import time
 
-print('PENTAVIUM')
 # Rules:
 # 1 --> 1721342310
 # 2 --> 2523490710
@@ -93,27 +92,32 @@ init_vector = '01001111010101010111110111010110101011110010110100001100010000010
 reg_A[:80] = list(map(int, list(key)))
 reg_B[:80] = list(map(int, list(init_vector)))
 
-start_time = time.time_ns()
-# Implementation as per Trivium source code
-for i in range(1, 100001):
-    t1 = reg_A[65] ^ reg_A[92]
-    t2 = reg_B[68] ^ reg_B[83]
-    t3 = reg_C[65] ^ reg_C[110]
 
-    output_bit = t1 ^ t2 ^ t3
+# Implementation as per Pentavium pseudo code
 
-    t1 = t1 ^ (reg_A[90] & reg_A[91]) ^ reg_B[76]
-    t2 = t2 ^ (reg_B[81] & reg_B[82]) ^ reg_C[87]
-    t3 = t3 ^ (reg_C[109] & reg_C[110]) ^ reg_A[68]
 
-    reg_A[1:] = apply_CA_to_blocks(reg_A)
-    reg_A[0] = t3
-    reg_B[1:] = apply_CA_to_blocks(reg_B)
-    reg_B[0] = t1
-    reg_C[1:] = apply_CA_to_blocks(reg_C)
-    reg_C[0] = t2
+def run_pentavium(max_iterations, log_interval_lists):
+    print('PENTAVIUM')
+    start_time = time.time_ns()
+    for i in range(1, max_iterations+1):
+        t1 = reg_A[65] ^ reg_A[92]
+        t2 = reg_B[68] ^ reg_B[83]
+        t3 = reg_C[65] ^ reg_C[110]
 
-    if i in [32, 144, 1152, 100000]:
-        time_taken = (time.time_ns() - start_time)/10**9
-        print('Time taken {} for clock cycle {}'.format(
-            time_taken, i))
+        output_bit = t1 ^ t2 ^ t3
+
+        t1 = t1 ^ (reg_A[90] & reg_A[91]) ^ reg_B[76]
+        t2 = t2 ^ (reg_B[81] & reg_B[82]) ^ reg_C[87]
+        t3 = t3 ^ (reg_C[109] & reg_C[110]) ^ reg_A[68]
+
+        reg_A[1:] = apply_CA_to_blocks(reg_A)
+        reg_A[0] = t3
+        reg_B[1:] = apply_CA_to_blocks(reg_B)
+        reg_B[0] = t1
+        reg_C[1:] = apply_CA_to_blocks(reg_C)
+        reg_C[0] = t2
+
+        if i in [32, 144, 1152, 100000]:
+            time_taken = (time.time_ns() - start_time)/10**9
+            print('Time taken {} for clock cycle {}'.format(
+                time_taken, i))
