@@ -43,5 +43,5 @@ def run_trivium(max_iterations, log_interval_list):
 
         if i in log_interval_list:
             time_taken = (time.time_ns() - start_time)/10**9
-            print('Time taken {} for iteration {}'.format(
+            print('Time taken {}s for iteration {}'.format(
                 time_taken, i))

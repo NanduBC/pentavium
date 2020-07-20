@@ -121,5 +121,5 @@ def run_pentavium(max_iterations, log_interval_lists):
 
         if i in log_interval_lists:
             time_taken = (time.time_ns() - start_time)/10**9
-            print('Time taken {} for clock cycle {}'.format(
+            print('Time taken {}s for clock cycle {}'.format(
                 time_taken, i))
