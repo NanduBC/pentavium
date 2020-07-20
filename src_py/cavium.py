@@ -2,6 +2,7 @@
 This is a naive Python implementation of CAvium
 '''
 import time
+from functools import lru_cache
 
 # Rules:
 # 1 --> 30
@@ -16,6 +17,7 @@ ca_rule_order = [1, 2, 3, 4, 5, 6, 7, 8]
 treg_X = [0] * 110
 
 
+@lru_cache(maxsize=128)
 def three_neighborhood_cellular_automata(
         s_minus_one,
         s,

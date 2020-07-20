@@ -2,6 +2,7 @@
 This is a naive Python implementation of Pentavium
 '''
 import time
+from functools import lru_cache
 
 # Rules:
 # 1 --> 1721342310
@@ -13,6 +14,7 @@ ca_rule_order = [3, 1, 2, 4, 1, 3, 4, 2]
 treg_X = [0] * 110
 
 
+@lru_cache(maxsize=128)
 def five_neighborhood_cellular_automata(
         s_minus_two,
         s_minus_one,
