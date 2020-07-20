@@ -37,21 +37,22 @@ def three_neighborhood_cellular_automata(
     State of s in the i+1 th clock cycle
     '''
     if rule_mappings == 1:
-        return (1 ^ s_minus_one) & s_plus_one | (1 ^ s_plus_one) & (s_minus_one ^ s)
+        return s_minus_one ^ s ^ s_plus_one ^ (s & s_plus_one)
     elif rule_mappings == 2:
         return s_minus_one ^ s
     elif rule_mappings == 3:
         return s_minus_one ^ s_plus_one
     elif rule_mappings == 4:
-        return s_plus_one & (s_minus_one ^ s) | s_minus_one & (1 ^ s_plus_one)
+        return s_minus_one ^ (s & s_plus_one)
     elif rule_mappings == 5:
         return s_minus_one ^ s ^ s_plus_one
     elif rule_mappings == 6:
-        return s_minus_one & s_plus_one | (1 ^ s_plus_one) & (s_minus_one ^ s)
+        return s_minus_one ^ s ^ (s & s_plus_one)
     elif rule_mappings == 7:
-        return (1 ^ s) & (s_minus_one ^ s_plus_one) | s_minus_one & s
+        return s_minus_one ^ s_plus_one ^ (s & s_plus_one)
     elif rule_mappings == 8:
         return s_minus_one
+
 
 def apply_CA_to_blocks(reg_X):
     '''
@@ -59,6 +60,14 @@ def apply_CA_to_blocks(reg_X):
     except the last register
     Parameters:
     ----------
+    reg_X: reg_A, reg_B, reg_C
+
+    Returns:
+    -------
+    A temporary register with CA applied to the reg_X
+
+    Notes:
+    -----
     Since CA is null boundary first elements have one neighbor as 0
     '''
     for i in range(len(reg_X)-1):
@@ -68,7 +77,6 @@ def apply_CA_to_blocks(reg_X):
         else:
             treg_X[i] = three_neighborhood_cellular_automata(reg_X[i-1], reg_X[i], reg_X[i+1], rule_mappings)
     return treg_X[:len(reg_X)-1]
-
 
 
 reg_A = [0] * 93
