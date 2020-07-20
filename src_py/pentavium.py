@@ -119,7 +119,7 @@ def run_pentavium(max_iterations, log_interval_lists):
         reg_C[1:] = apply_CA_to_blocks(reg_C)
         reg_C[0] = t2
 
-        if i in [32, 144, 1152, 100000]:
+        if i in log_interval_lists:
             time_taken = (time.time_ns() - start_time)/10**9
             print('Time taken {} for clock cycle {}'.format(
                 time_taken, i))
