@@ -9,6 +9,7 @@ print('PENTAVIUM')
 # 2 --> 2523490710
 # 3 --> 1452976485
 # 4 --> 1520018790
+# The rules are ordered in N, L, L, N, L, N, L, N
 ca_rule_order = [3, 1, 2, 4, 1, 3, 4, 2]
 treg_X = [0] * 110
 
