@@ -1,19 +1,28 @@
-module cavium_CA(input a, b, c, rule_number, output x);
-	if (rule_number == 1) begin
-		assign x = a ^ b ^ c ^ (b & c);
-	end else if (rule_number == 2) begin
-		assign x = a ^ b;
-	end else if (rule_number == 3) begin
-		assign x = a ^ c;
-	end else if (rule_number == 4) begin
-		assign x = a ^ (b & c);
-	end else if (rule_number == 5) begin
-		assign x = a ^ b ^ c;
-	end else if (rule_number == 6) begin
-		assign x = a ^ b ^ (b & c);
-	end else if (rule_number == 7) begin
-		assign x = a ^ c ^ (b & c);
-	end else begin
-		assign x = a;
+module cavium_CA(
+input a,
+input b,
+input c,
+input rule_number,
+output x);
+	reg temp;
+	always @* begin
+		if (rule_number == 3'b000) begin
+			temp = a ^ b ^ c ^ (b & c);
+		end else if (rule_number == 3'b001) begin
+			temp = a ^ b;
+		end else if (rule_number == 3'b010) begin
+			temp = a ^ c;
+		end else if (rule_number == 3'b011) begin
+			temp = a ^ (b & c);
+		end else if (rule_number == 3'b100) begin
+			temp = a ^ b ^ c;
+		end else if (rule_number == 3'b101) begin
+			temp = a ^ b ^ (b & c);
+		end else if (rule_number == 3'b110) begin
+			temp = a ^ c ^ (b & c);
+		end else if (rule_number == 3'b111) begin
+			temp = a;
+		end
 	end
+	assign x = temp;
 endmodule
