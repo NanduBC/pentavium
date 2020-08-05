@@ -1,9 +1,9 @@
 # Pentavium stream cipher
 
 Time comparison on Python code:
-python time_comparison.py
+python time_comparison_script.py
 
 Time comparison on C code:
-gcc <cipher>.c -o <cipher>
-./<cipher>
+gcc time_comparison.c -o time_comparison
+./time_comparison
 
