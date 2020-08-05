@@ -1,12 +1,6 @@
 #include <stdio.h>
 #include <time.h>
-
-#define KEY_LEN 80
-#define IV_LEN 80
-#define A_LEN 93
-#define B_LEN 84
-#define C_LEN 111
-#define INIT_LEN 32
+#include "len.h"
 
 typedef unsigned int u32;
 typedef unsigned char u8;
@@ -35,7 +29,7 @@ int five_neighborhood_CA(int s_minus_two, int s_minus_one, int s, int s_plus_one
 	return z;
 }
 
-void apply_to_CA_blocks(int* reg, int* temp_reg, int len){
+void apply_to_5CA_blocks(int* reg, int* temp_reg, int len){
 	for(int i=0;i<len;i++){
         int rule_number = ca_rule_order[i % 8];
         if(i== 0)
@@ -93,9 +87,9 @@ void pentavium_keystream_generation(int* keystream, int* key, int* iv, long long
         t3 = t3 ^ (c[109] & c[110]) ^ a[68];
 
 		//Appy CA
-		apply_to_CA_blocks(a, temp_a, A_LEN);
-		apply_to_CA_blocks(b, temp_b, B_LEN);
-		apply_to_CA_blocks(c, temp_c, C_LEN);
+		apply_to_5CA_blocks(a, temp_a, A_LEN);
+		apply_to_5CA_blocks(b, temp_b, B_LEN);
+		apply_to_5CA_blocks(c, temp_c, C_LEN);
 
 		for(j=1;j<A_LEN;++j)
 			a[j] = temp_a[j-1];
@@ -107,18 +101,4 @@ void pentavium_keystream_generation(int* keystream, int* key, int* iv, long long
 		b[0] = t1;
 		c[0] = t2;
 	}
-}
-
-int main(){
-	int key[80] = {0, 0, 1, 0, 1, 1, 1, 0, 1, 1, 0, 0, 0, 0, 0, 0, 0, 1, 1, 0, 0, 1, 0, 1, 0, 1, 1, 1, 1, 1, 0, 1, 0, 0, 0, 0, 1, 1, 0, 1, 1, 1, 0, 0, 1, 1, 0, 1, 0, 0, 1, 0, 1, 1, 1, 1, 0, 1, 1, 0, 0, 1, 0, 1, 0, 1, 0, 1, 1, 1, 0, 0, 1, 0, 0, 1, 1, 0, 0, 1};
-	int iv[80] = {0, 1, 0, 0, 1, 1, 1, 1, 0, 1, 0, 1, 0, 1, 0, 1, 0, 1, 1, 1, 1, 1, 0, 1, 1, 1, 0, 1, 0, 1, 1, 0, 1, 0, 1, 0, 1, 1, 1, 1, 0, 0, 1, 0, 1, 1, 0, 1, 0, 0, 0, 0, 1, 1, 0, 0, 0, 1, 0, 0, 0, 0, 0, 1, 0, 1, 1, 1, 1, 0, 1, 1, 0, 0, 1, 0, 0, 0, 0, 0};
-	static int keystream[1000];
-	printf("PENTAVIUM C IMPLEMENTATION\n\n");
-	pentavium_keystream_generation(keystream, key, iv, sizeof(keystream)/sizeof(int));
-	printf("Keystream generated\n");
-	for(int i=0;i<100;++i){
-		printf("%d", *(keystream+i));
-	}
-	printf("\n");
-	return 0;
 }

@@ -1,12 +1,6 @@
 #include <stdio.h>
 #include <time.h>
-
-#define KEY_LEN 80
-#define IV_LEN 80
-#define A_LEN 93
-#define B_LEN 84
-#define C_LEN 111
-#define INIT_LEN 144
+#include "len.h"
 
 typedef unsigned int u32;
 typedef unsigned char u8;
@@ -45,7 +39,7 @@ int three_neighborhood_CA(int s_minus_one, int s, int s_plus_one, int rule_numbe
 	return z;
 }
 
-void apply_to_CA_blocks(int* reg, int* temp_reg, int len){
+void apply_to_3CA_blocks(int* reg, int* temp_reg, int len){
 	for(int i=0;i<len;i++){
 		if(i==0)
 			temp_reg[i] = three_neighborhood_CA(0, reg[i], reg[i+1], i%8);
@@ -98,9 +92,9 @@ void cavium_keystream_generation(int* keystream, int* key, int* iv, long long in
         t3 = t3 ^ (c[109] & c[110]) ^ a[68];
 
 		//Appy CA
-		apply_to_CA_blocks(a, temp_a, A_LEN);
-		apply_to_CA_blocks(b, temp_b, B_LEN);
-		apply_to_CA_blocks(c, temp_c, C_LEN);
+		apply_to_3CA_blocks(a, temp_a, A_LEN);
+		apply_to_3CA_blocks(b, temp_b, B_LEN);
+		apply_to_3CA_blocks(c, temp_c, C_LEN);
 
 		for(j=1;j<A_LEN;++j)
 			a[j] = temp_a[j-1];
@@ -112,18 +106,4 @@ void cavium_keystream_generation(int* keystream, int* key, int* iv, long long in
 		b[0] = t1;
 		c[0] = t2;
 	}
-}
-
-int main(){
-	int key[80] = {0, 0, 1, 0, 1, 1, 1, 0, 1, 1, 0, 0, 0, 0, 0, 0, 0, 1, 1, 0, 0, 1, 0, 1, 0, 1, 1, 1, 1, 1, 0, 1, 0, 0, 0, 0, 1, 1, 0, 1, 1, 1, 0, 0, 1, 1, 0, 1, 0, 0, 1, 0, 1, 1, 1, 1, 0, 1, 1, 0, 0, 1, 0, 1, 0, 1, 0, 1, 1, 1, 0, 0, 1, 0, 0, 1, 1, 0, 0, 1};
-	int iv[80] = {0, 1, 0, 0, 1, 1, 1, 1, 0, 1, 0, 1, 0, 1, 0, 1, 0, 1, 1, 1, 1, 1, 0, 1, 1, 1, 0, 1, 0, 1, 1, 0, 1, 0, 1, 0, 1, 1, 1, 1, 0, 0, 1, 0, 1, 1, 0, 1, 0, 0, 0, 0, 1, 1, 0, 0, 0, 1, 0, 0, 0, 0, 0, 1, 0, 1, 1, 1, 1, 0, 1, 1, 0, 0, 1, 0, 0, 0, 0, 0};
-	static int keystream[1000];
-	printf("CAVIUM C IMPLEMENTATION\n\n");
-	cavium_keystream_generation(keystream, key, iv, sizeof(keystream)/sizeof(int));
-	printf("Keystream generated\n");
-	for(int i=0;i<100;++i){
-		printf("%d", *(keystream+i));
-	}
-	printf("\n");
-	return 0;
 }

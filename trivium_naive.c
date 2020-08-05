@@ -1,12 +1,6 @@
 #include <stdio.h>
 #include <time.h>
-
-#define KEY_LEN 80
-#define IV_LEN 80
-#define A_LEN 93
-#define B_LEN 84
-#define C_LEN 111
-#define INIT_LEN 1152
+#include "len.h"
 
 typedef unsigned int u32;
 typedef unsigned char u8;
@@ -62,18 +56,4 @@ void trivium_keystream_generation(int* keystream, int* key, int* iv, long long i
 		b[0] = t1;
 		c[0] = t2;
 	}
-}
-
-int main(){
-	int key[80] = {0, 0, 1, 0, 1, 1, 1, 0, 1, 1, 0, 0, 0, 0, 0, 0, 0, 1, 1, 0, 0, 1, 0, 1, 0, 1, 1, 1, 1, 1, 0, 1, 0, 0, 0, 0, 1, 1, 0, 1, 1, 1, 0, 0, 1, 1, 0, 1, 0, 0, 1, 0, 1, 1, 1, 1, 0, 1, 1, 0, 0, 1, 0, 1, 0, 1, 0, 1, 1, 1, 0, 0, 1, 0, 0, 1, 1, 0, 0, 1};
-	int iv[80] = {0, 1, 0, 0, 1, 1, 1, 1, 0, 1, 0, 1, 0, 1, 0, 1, 0, 1, 1, 1, 1, 1, 0, 1, 1, 1, 0, 1, 0, 1, 1, 0, 1, 0, 1, 0, 1, 1, 1, 1, 0, 0, 1, 0, 1, 1, 0, 1, 0, 0, 0, 0, 1, 1, 0, 0, 0, 1, 0, 0, 0, 0, 0, 1, 0, 1, 1, 1, 1, 0, 1, 1, 0, 0, 1, 0, 0, 0, 0, 0};
-	static int keystream[100000000];
-	printf("TRIVIUM C IMPLEMENTATION\n\n");
-	trivium_keystream_generation(keystream, key, iv, sizeof(keystream)/sizeof(int));
-	printf("Keystream generated\n");
-	for(int i=0;i<100;++i){
-		printf("%d", *(keystream+i));
-	}
-	printf("\n");
-	return 0;
 }
