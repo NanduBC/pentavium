@@ -23,12 +23,13 @@ reg_B[:80] = list(map(int, list(init_vector)))
 def run_trivium(max_iterations, log_interval_list):
     print('TRIVIUM')
     start_time = time.time_ns()
+    keystream = []
     for i in range(1, max_iterations+1):
         t1 = reg_A[65] ^ reg_A[92]
         t2 = reg_B[68] ^ reg_B[83]
         t3 = reg_C[65] ^ reg_C[110]
 
-        output_bit = t1 ^ t2 ^ t3
+        keystream.append(t1 ^ t2 ^ t3)
 
         t1 = t1 ^ (reg_A[90] & reg_A[91]) ^ reg_B[76]
         t2 = t2 ^ (reg_B[81] & reg_B[82]) ^ reg_C[87]
@@ -45,3 +46,4 @@ def run_trivium(max_iterations, log_interval_list):
             time_taken = (time.time_ns() - start_time)/10**9
             print('Time taken {}s for iteration {}'.format(
                 time_taken, i))
+    return keystream
