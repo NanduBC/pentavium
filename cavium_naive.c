@@ -6,7 +6,7 @@
 #define A_LEN 93
 #define B_LEN 84
 #define C_LEN 111
-#define INIT_LEN 1152
+#define INIT_LEN 144
 
 typedef unsigned int u32;
 typedef unsigned char u8;
