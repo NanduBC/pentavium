@@ -54,7 +54,7 @@ void apply_to_CA_blocks(int* reg, int* temp_reg, int len){
 	}
 }
 
-void trivium_keystream_generation(int* keystream, int* key, int* iv, long long int iterations){
+void cavium_keystream_generation(int* keystream, int* key, int* iv, long long int iterations){
 	int i, j, t1, t2, t3;
 	int a[A_LEN];
 	int b[B_LEN];
@@ -119,7 +119,7 @@ int main(){
 	int iv[80] = {0, 1, 0, 0, 1, 1, 1, 1, 0, 1, 0, 1, 0, 1, 0, 1, 0, 1, 1, 1, 1, 1, 0, 1, 1, 1, 0, 1, 0, 1, 1, 0, 1, 0, 1, 0, 1, 1, 1, 1, 0, 0, 1, 0, 1, 1, 0, 1, 0, 0, 0, 0, 1, 1, 0, 0, 0, 1, 0, 0, 0, 0, 0, 1, 0, 1, 1, 1, 1, 0, 1, 1, 0, 0, 1, 0, 0, 0, 0, 0};
 	static int keystream[1000];
 	printf("CAVIUM C IMPLEMENTATION\n\n");
-	trivium_keystream_generation(keystream, key, iv, sizeof(keystream)/sizeof(int));
+	cavium_keystream_generation(keystream, key, iv, sizeof(keystream)/sizeof(int));
 	printf("Keystream generated\n");
 	for(int i=0;i<100;++i){
 		printf("%d", *(keystream+i));
