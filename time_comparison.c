@@ -1,6 +1,6 @@
-#include "trivium_naive.c"
-#include "cavium_naive.c"
-#include "pentavium_naive.c"
+#include "src_c/trivium_naive.c"
+#include "src_c/cavium_naive.c"
+#include "src_c/pentavium_naive.c"
 
 int main(){
 	int key[80] = {0, 0, 1, 0, 1, 1, 1, 0, 1, 1, 0, 0, 0, 0, 0, 0, 0, 1, 1, 0, 0, 1, 0, 1, 0, 1, 1, 1, 1, 1, 0, 1, 0, 0, 0, 0, 1, 1, 0, 1, 1, 1, 0, 0, 1, 1, 0, 1, 0, 0, 1, 0, 1, 1, 1, 1, 0, 1, 1, 0, 0, 1, 0, 1, 0, 1, 0, 1, 1, 1, 0, 0, 1, 0, 0, 1, 1, 0, 0, 1};
