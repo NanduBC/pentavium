@@ -54,7 +54,6 @@ void pentavium_keystream_generation(int* keystream, int* key, int* iv, long long
 	clock_t start_time;
 	clock_t curr_time;
 	long double diff = 0.0;
-	printf("%lld\n", iterations);
 
 	// KEY and IV SETUP
 	for(i=0;i<KEY_LEN;++i)
