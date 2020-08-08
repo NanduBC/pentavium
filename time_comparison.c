@@ -11,7 +11,7 @@ int main(int argc, char* argv[]){
 	int* keystream = (int* ) malloc(max_iterations*sizeof(int));
 	printf("%lu\n", sizeof(keystream)/sizeof(int));
 	printf("TRIVIUM C IMPLEMENTATION\n");
-	trivium_keystream_generation(keystream, key, iv, sizeof(keystream)/sizeof(int));
+	trivium_keystream_generation(keystream, key, iv, max_iterations);
 	printf("Keystream generated\n");
 	for(int i=0;i<100;++i){
 		printf("%d", *(keystream+i));
@@ -19,7 +19,7 @@ int main(int argc, char* argv[]){
 	printf("\n");
 
 	printf("CAVIUM C IMPLEMENTATION\n");
-	cavium_keystream_generation(keystream, key, iv, sizeof(keystream)/sizeof(int));
+	cavium_keystream_generation(keystream, key, iv, max_iterations);
 	printf("Keystream generated\n");
 	for(int i=0;i<100;++i){
 		printf("%d", *(keystream+i));
@@ -27,7 +27,7 @@ int main(int argc, char* argv[]){
 	printf("\n");
 
 	printf("PENTAVIUM C IMPLEMENTATION\n");
-	pentavium_keystream_generation(keystream, key, iv, sizeof(keystream)/sizeof(int));
+	pentavium_keystream_generation(keystream, key, iv, max_iterations);
 	printf("Keystream generated\n");
 	for(int i=0;i<100;++i){
 		printf("%d", *(keystream+i));
