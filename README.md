@@ -1,9 +1,14 @@
 # Pentavium stream cipher
+Change directory to `pentavium` folder
 
-Time comparison on Python code:
-python time_comparison_script.py
+	cd pentavium/
 
-Time comparison on C code:
-gcc time_comparison.c -o time_comparison
-./time_comparison
+Make log_cipher_time.sh executable
 
+	chmod +x log_cipher_time.sh
+
+Execute ciphers for n iterations
+
+	./log_cipher_time.sh --iter 1000000 -c
+
+Log will be created in pentavium/benchmark/
