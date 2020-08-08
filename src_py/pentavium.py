@@ -99,7 +99,7 @@ reg_B[:80] = list(map(int, list(init_vector)))
 
 
 def run_pentavium(max_iterations, log_interval_lists):
-    print('PENTAVIUM')
+    print('PENTAVIUM PYTHON IMPLEMENTATION')
     start_time = time.time_ns()
     keystream = []
     for i in range(1, max_iterations+1):

@@ -1,7 +1,14 @@
 # Pentavium stream cipher
+Change directory to `pentavium` folder
 
-## This repository contains source code for Pentavium stream cipher
-## Files:
-*  src_py/pentavium.py
-*  src_py/cavium.py
-*  src_py/trivium.py
+	cd pentavium/
+
+Make log_cipher_time.sh executable
+
+	chmod +x log_cipher_time.sh
+
+Execute ciphers for n iterations
+
+	./log_cipher_time.sh --iter 1000000 -c
+
+Log will be created in pentavium/benchmark/
