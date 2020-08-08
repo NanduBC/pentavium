@@ -6,8 +6,10 @@
 int main(int argc, char* argv[]){
 	int key[80] = {0, 0, 1, 0, 1, 1, 1, 0, 1, 1, 0, 0, 0, 0, 0, 0, 0, 1, 1, 0, 0, 1, 0, 1, 0, 1, 1, 1, 1, 1, 0, 1, 0, 0, 0, 0, 1, 1, 0, 1, 1, 1, 0, 0, 1, 1, 0, 1, 0, 0, 1, 0, 1, 1, 1, 1, 0, 1, 1, 0, 0, 1, 0, 1, 0, 1, 0, 1, 1, 1, 0, 0, 1, 0, 0, 1, 1, 0, 0, 1};
 	int iv[80] = {0, 1, 0, 0, 1, 1, 1, 1, 0, 1, 0, 1, 0, 1, 0, 1, 0, 1, 1, 1, 1, 1, 0, 1, 1, 1, 0, 1, 0, 1, 1, 0, 1, 0, 1, 0, 1, 1, 1, 1, 0, 0, 1, 0, 1, 1, 0, 1, 0, 0, 0, 0, 1, 1, 0, 0, 0, 1, 0, 0, 0, 0, 0, 1, 0, 1, 1, 1, 1, 0, 1, 1, 0, 0, 1, 0, 0, 0, 0, 0};
-	int max_iterations = atoi(argv[1]);
-	int keystream[max_iterations];
+	long long int max_iterations = atoll(argv[1]);
+	printf("%llu\n", max_iterations*sizeof(int));
+	int* keystream = (int* ) malloc(max_iterations*sizeof(int));
+	printf("%lu\n", sizeof(keystream)/sizeof(int));
 	printf("TRIVIUM C IMPLEMENTATION\n");
 	trivium_keystream_generation(keystream, key, iv, sizeof(keystream)/sizeof(int));
 	printf("Keystream generated\n");
@@ -31,6 +33,6 @@ int main(int argc, char* argv[]){
 		printf("%d", *(keystream+i));
 	}
 	printf("\n");
-
+	free(keystream);
 	return 0;
 }
