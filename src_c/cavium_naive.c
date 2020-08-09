@@ -5,6 +5,7 @@
 typedef unsigned int u32;
 typedef unsigned char u8;
 
+short int three_neighborhood_CA[8][2][2][2];
 /**
  * CAvium rules
  * 0 --> 30
@@ -16,35 +17,41 @@ typedef unsigned char u8;
  * 6 --> 210
  * 7 --> 240
  */
-int three_neighborhood_CA(int s_minus_one, int s, int s_plus_one, int rule_number){
-	int z = -1;
-    if(rule_number == 0)
-        z = s_minus_one ^ s ^ s_plus_one ^ (s & s_plus_one);
-    else if(rule_number == 1)
-        z = s_minus_one ^ s;
-    else if(rule_number == 2)
-        z = s_minus_one ^ s_plus_one;
-    else if(rule_number == 3)
-        z = s_minus_one ^ (s & s_plus_one);
-    else if(rule_number == 4)
-        z = s_minus_one ^ s ^ s_plus_one;
-    else if(rule_number == 5)
-        z = s_minus_one ^ s ^ (s & s_plus_one);
-    else if(rule_number == 6)
-        z = s_minus_one ^ s_plus_one ^ (s & s_plus_one);
-    else if(rule_number == 7)
-        z = s_minus_one;
-	else
-		printf("Invalid rule_number");
-	return z;
+void tabulate_three_neighborhood_CA(){
+	for(short int j=0;j<2;++j){
+		for(short int k=0;k<2;++k){
+			for(short int l=0;l<2;++l){
+				for(short int i=0;i<8;++i){
+					if(i == 0)
+						three_neighborhood_CA[i][j][k][l] = j ^ k ^ l ^ (k & l);
+					else if(i == 1)
+						three_neighborhood_CA[i][j][k][l] = j ^ k;
+					else if(i == 2)
+						three_neighborhood_CA[i][j][k][l] = j ^ l;
+					else if(i == 3)
+						three_neighborhood_CA[i][j][k][l] = j ^ (k & l);
+					else if(i == 4)
+						three_neighborhood_CA[i][j][k][l] = j ^ k ^ l;
+					else if(i == 5)
+						three_neighborhood_CA[i][j][k][l] = j ^ k ^ (k & l);
+					else if(i == 6)
+						three_neighborhood_CA[i][j][k][l] = j ^ l ^ (k & l);
+					else if(i == 7)
+						three_neighborhood_CA[i][j][k][l] = j;
+					else
+						printf("Invalid rule\n");
+				}
+			}
+		}
+	}
 }
 
 void apply_to_3CA_blocks(int* reg, int* temp_reg, int len){
-	for(int i=0;i<len;i++){
+	for(int i=0;i<len-1;i++){
 		if(i==0)
-			temp_reg[i] = three_neighborhood_CA(0, reg[i], reg[i+1], i%8);
+			temp_reg[i] = three_neighborhood_CA[i%8][0][reg[i]][reg[i+1]];
 		else
-			temp_reg[i] = three_neighborhood_CA(reg[i-1], reg[i], reg[i+1], i%8);
+			temp_reg[i] = three_neighborhood_CA[i%8][reg[i-1]][reg[i]][reg[i+1]];
 	}
 }
 
@@ -59,6 +66,9 @@ void cavium_keystream_generation(int* keystream, int* key, int* iv, long long in
 	clock_t start_time;
 	clock_t curr_time;
 	long double diff = 0.0;
+
+	//Create Look up table for CA
+	tabulate_three_neighborhood_CA();
 
 	// KEY and IV SETUP
 	for(i=0;i<KEY_LEN;++i)

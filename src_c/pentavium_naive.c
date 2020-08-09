@@ -5,8 +5,8 @@
 typedef unsigned int u32;
 typedef unsigned char u8;
 
-static int ca_rule_order[8] = {2, 0, 1, 3, 0, 2, 3, 1};
-
+int ca_rule_order[8] = {2, 0, 1, 3, 0, 2, 3, 1};
+short int five_neighborhood_CA[4][2][2][2][2][2];
 /**
  * CAvium rules
  * 0 --> 1721342310
@@ -14,32 +14,41 @@ static int ca_rule_order[8] = {2, 0, 1, 3, 0, 2, 3, 1};
  * 2 --> 1452976485
  * 3 --> 1520018790
  */
-int five_neighborhood_CA(int s_minus_two, int s_minus_one, int s, int s_plus_one, int s_plus_two, int rule_number){
-	int z = -1;
-	if(rule_number == 0)
-        z = s_minus_two ^ s_minus_one ^ s_plus_one ^ s_plus_two;
-    else if(rule_number == 1)
-        z = s_minus_two ^ s_minus_one ^ s ^ s_plus_one ^ s_plus_two;
-    else if(rule_number == 2)
-        z = s_plus_two ^ (s_plus_one & s) ^ (s_plus_one & s_minus_one) ^ s ^ s_minus_two ^ 1;
-    else if(rule_number == 3)
-        z = s_plus_two ^ (s_plus_one & s_minus_one) ^ (s & s_minus_one) ^ s_minus_one ^ s_minus_two;
-	else
-		printf("Invalid rule_number");
-	return z;
+int tabulate_five_neighborhood_CA(){
+	for(short int j=0;j<2;++j){
+		for(short int k=0;k<2;++k){
+			for(short int l=0;l<2;++l){
+				for(short int m=0;m<2;++m){
+					for(short int n=0;n<2;++n){
+						for(short int i=0;i<4;++i){
+							if(i == 0)
+								five_neighborhood_CA[i][j][k][l][m][n] = j ^ k ^ m ^ n;
+							else if(i == 1)
+								five_neighborhood_CA[i][j][k][l][m][n] = j ^ k ^ l ^ m ^ n;
+							else if(i == 2)
+								five_neighborhood_CA[i][j][k][l][m][n] = n ^ (m & l) ^ (m & k) ^ l ^ j ^ 1;
+							else if(i == 3)
+								five_neighborhood_CA[i][j][k][l][m][n] = n ^ (m & k) ^ (l & k) ^ k ^ j;
+						}
+					}
+				}
+			}
+		}
+	}
+
 }
 
 void apply_to_5CA_blocks(int* reg, int* temp_reg, int len){
-	for(int i=0;i<len;i++){
+	for(int i=0;i<len-1;i++){
         int rule_number = ca_rule_order[i % 8];
         if(i== 0)
-            temp_reg[i] = five_neighborhood_CA(0, 0, reg[i], reg[i+1], reg[i+2], rule_number);
+            temp_reg[i] = five_neighborhood_CA[rule_number][0][0][reg[i]][reg[i+1]][reg[i+2]];
         else if(i== 1)
-            temp_reg[i] = five_neighborhood_CA(0, reg[i-1], reg[i], reg[i+1], reg[i+2], rule_number);
+            temp_reg[i] = five_neighborhood_CA[rule_number][0][reg[i-1]][reg[i]][reg[i+1]][reg[i+2]];
         else if(i== (len - 2))
-            temp_reg[i] = five_neighborhood_CA(reg[i-2], reg[i-1], reg[i], reg[i+1], 0, rule_number);
+            temp_reg[i] = five_neighborhood_CA[rule_number][reg[i-2]][reg[i-1]][reg[i]][reg[i+1]][0];
         else
-            temp_reg[i] = five_neighborhood_CA(reg[i-2], reg[i-1], reg[i], reg[i+1], reg[i+2], rule_number);	
+            temp_reg[i] = five_neighborhood_CA[rule_number][reg[i-2]][reg[i-1]][reg[i]][reg[i+1]][reg[i+2]];
 	}
 }
 
@@ -54,6 +63,9 @@ void pentavium_keystream_generation(int* keystream, int* key, int* iv, long long
 	clock_t start_time;
 	clock_t curr_time;
 	long double diff = 0.0;
+
+	//Create look up table
+	tabulate_five_neighborhood_CA();
 
 	// KEY and IV SETUP
 	for(i=0;i<KEY_LEN;++i)
