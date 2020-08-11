@@ -35,20 +35,19 @@ int tabulate_five_neighborhood_CA(){
 			}
 		}
 	}
-
 }
 
 void apply_to_5CA_blocks(int* reg, int* temp_reg, int len){
 	for(int i=0;i<len-1;i++){
-        int rule_number = ca_rule_order[i % 8];
-        if(i== 0)
-            temp_reg[i] = five_neighborhood_CA[rule_number][0][0][reg[i]][reg[i+1]][reg[i+2]];
-        else if(i== 1)
-            temp_reg[i] = five_neighborhood_CA[rule_number][0][reg[i-1]][reg[i]][reg[i+1]][reg[i+2]];
-        else if(i== (len - 2))
-            temp_reg[i] = five_neighborhood_CA[rule_number][reg[i-2]][reg[i-1]][reg[i]][reg[i+1]][0];
-        else
-            temp_reg[i] = five_neighborhood_CA[rule_number][reg[i-2]][reg[i-1]][reg[i]][reg[i+1]][reg[i+2]];
+		int rule_number = ca_rule_order[i % 8];
+		if(i== 0)
+			temp_reg[i] = five_neighborhood_CA[rule_number][0][0][reg[i]][reg[i+1]][reg[i+2]];
+		else if(i== 1)
+			temp_reg[i] = five_neighborhood_CA[rule_number][0][reg[i-1]][reg[i]][reg[i+1]][reg[i+2]];
+		else if(i== (len - 2))
+			temp_reg[i] = five_neighborhood_CA[rule_number][reg[i-2]][reg[i-1]][reg[i]][reg[i+1]][0];
+		else
+			temp_reg[i] = five_neighborhood_CA[rule_number][reg[i-2]][reg[i-1]][reg[i]][reg[i+1]][reg[i+2]];
 	}
 }
 
@@ -61,7 +60,8 @@ void pentavium_keystream_generation(int* keystream, int* key, int* iv, long long
 	int temp_b[B_LEN];
 	int temp_c[C_LEN];
 	clock_t start_time;
-	clock_t curr_time;
+	clock_t init_phase_time;
+	clock_t keygen_phase_time;
 	long double diff = 0.0;
 
 	//Create look up table
@@ -81,23 +81,49 @@ void pentavium_keystream_generation(int* keystream, int* key, int* iv, long long
 	for(i=C_LEN-3;i<C_LEN;++i)
 		c[i] = 1;
 
+	// Initialization phase
+	start_time = clock();
+	for(i=1;i<=PENTAVIUM_INIT_LEN;++i){
+		// Update
+		t1 = a[65] ^ a[92];
+		t2 = b[68] ^ b[83];
+		t3 = c[65] ^ c[110];
+		t1 = t1 ^ (a[90] & a[91]) ^ b[76];
+		t2 = t2 ^ (b[81] & b[82]) ^ c[87];
+		t3 = t3 ^ (c[109] & c[110]) ^ a[68];
+
+		// Apply CA
+		apply_to_3CA_blocks(a, temp_a, A_LEN);
+		apply_to_3CA_blocks(b, temp_b, B_LEN);
+		apply_to_3CA_blocks(c, temp_c, C_LEN);
+
+		for(j=1;j<A_LEN;++j)
+			a[j] = temp_a[j-1];
+		for(j=1;j<B_LEN;++j)
+			b[j] = temp_b[j-1];
+		for(j=1;j<C_LEN;++j)
+			c[j] = temp_c[j-1];
+		a[0] = t3;
+		b[0] = t1;
+		c[0] = t2;
+	}
+	init_phase_time = clock();
+	diff = (long double)(init_phase_time - start_time)/(long double)(CLOCKS_PER_SEC);
+	printf("Initialization phase time: %.9Lf seconds  Iteration:%d \n", diff, PENTAVIUM_INIT_LEN);
+
+	// Keystream generation phase
 	start_time = clock();
 	for(i=1;i<=iterations;++i){
-		if(i==32 || i==144 || i==1152 ||i==iterations){
-			curr_time = clock();
-			diff = (long double)(curr_time- start_time)/(long double)(CLOCKS_PER_SEC);
-			printf("Time taken for %d th iteration: %.9Lf seconds\n", i, diff);
-		}
-		//Update
+		// Update
 		t1 = a[65] ^ a[92];
 		t2 = b[68] ^ b[83];
 		t3 = c[65] ^ c[110];
 		keystream[i-1] = t1 ^ t2 ^ t3;
-        t1 = t1 ^ (a[90] & a[91]) ^ b[76];
-        t2 = t2 ^ (b[81] & b[82]) ^ c[87];
-        t3 = t3 ^ (c[109] & c[110]) ^ a[68];
+		t1 = t1 ^ (a[90] & a[91]) ^ b[76];
+		t2 = t2 ^ (b[81] & b[82]) ^ c[87];
+		t3 = t3 ^ (c[109] & c[110]) ^ a[68];
 
-		//Appy CA
+		// Apply CA
 		apply_to_5CA_blocks(a, temp_a, A_LEN);
 		apply_to_5CA_blocks(b, temp_b, B_LEN);
 		apply_to_5CA_blocks(c, temp_c, C_LEN);
@@ -112,4 +138,7 @@ void pentavium_keystream_generation(int* keystream, int* key, int* iv, long long
 		b[0] = t1;
 		c[0] = t2;
 	}
+	keygen_phase_time = clock();
+	diff = (long double)(keygen_phase_time - start_time)/(long double)(CLOCKS_PER_SEC);
+	printf("Keystream generation phase time: %.9Lf seconds  Iteration:%lld\n", diff, iterations);
 }
