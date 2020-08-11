@@ -93,9 +93,9 @@ void pentavium_keystream_generation(int* keystream, int* key, int* iv, long long
 		t3 = t3 ^ (c[109] & c[110]) ^ a[68];
 
 		// Apply CA
-		apply_to_3CA_blocks(a, temp_a, A_LEN);
-		apply_to_3CA_blocks(b, temp_b, B_LEN);
-		apply_to_3CA_blocks(c, temp_c, C_LEN);
+		apply_to_5CA_blocks(a, temp_a, A_LEN);
+		apply_to_5CA_blocks(b, temp_b, B_LEN);
+		apply_to_5CA_blocks(c, temp_c, C_LEN);
 
 		for(j=1;j<A_LEN;++j)
 			a[j] = temp_a[j-1];
