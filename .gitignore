@@ -1,0 +1,6 @@
+benchmark/*.txt
+src_py/__pycache__/
+time_comparison
+src_c/pentavium
+src_c/cavium
+src_c/trivium
