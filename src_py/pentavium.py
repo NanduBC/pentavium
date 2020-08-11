@@ -4,6 +4,7 @@ This is a naive Python implementation of Pentavium
 import time
 from functools import lru_cache
 
+PENTAVIUM_INIT_LEN = 32
 # Rules:
 # 1 --> 1721342310
 # 2 --> 2523490710
@@ -98,10 +99,31 @@ reg_B[:80] = list(map(int, list(init_vector)))
 # Implementation as per Pentavium pseudo code
 
 
-def run_pentavium(max_iterations, log_interval_lists):
+def run_pentavium(max_iterations):
     print('PENTAVIUM PYTHON IMPLEMENTATION')
     start_time = time.time_ns()
+    for i in range(PENTAVIUM_INIT_LEN):
+        t1 = reg_A[65] ^ reg_A[92]
+        t2 = reg_B[68] ^ reg_B[83]
+        t3 = reg_C[65] ^ reg_C[110]
+
+        t1 = t1 ^ (reg_A[90] & reg_A[91]) ^ reg_B[76]
+        t2 = t2 ^ (reg_B[81] & reg_B[82]) ^ reg_C[87]
+        t3 = t3 ^ (reg_C[109] & reg_C[110]) ^ reg_A[68]
+
+        reg_A[1:] = apply_CA_to_blocks(reg_A)
+        reg_A[0] = t3
+        reg_B[1:] = apply_CA_to_blocks(reg_B)
+        reg_B[0] = t1
+        reg_C[1:] = apply_CA_to_blocks(reg_C)
+        reg_C[0] = t2
+
+    init_phase_time = (time.time_ns() - start_time)/10**9
+    print('Initialization phase time: {}seconds  Iterations: {}'.format(
+        init_phase_time, PENTAVIUM_INIT_LEN))
+
     keystream = []
+    start_time = time.time_ns()
     for i in range(1, max_iterations+1):
         t1 = reg_A[65] ^ reg_A[92]
         t2 = reg_B[68] ^ reg_B[83]
@@ -120,8 +142,7 @@ def run_pentavium(max_iterations, log_interval_lists):
         reg_C[1:] = apply_CA_to_blocks(reg_C)
         reg_C[0] = t2
 
-        if i in log_interval_lists:
-            time_taken = (time.time_ns() - start_time)/10**9
-            print('Time taken {}s for clock cycle {}'.format(
-                time_taken, i))
+    keygen_phase_time = (time.time_ns() - start_time)/10**9
+    print('Keystream phase time: {}seconds  Iterations: {}'.format(
+        keygen_phase_time, max_iterations))
     return keystream
